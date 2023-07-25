@@ -1,8 +1,7 @@
-import { createMachine } from "xstate";
 import { createModel } from "xstate/lib/model";
-import { Player } from "../types";
+import { Player, PlayerColors } from "../types";
 import { GridState } from "../types";
-
+import { canJoinGuard } from "./guards";
 enum GameStates  {
     LOBBY = 'LOBBY',
     GAME = 'GAME', 
@@ -13,6 +12,7 @@ enum GameStates  {
 export const GameModel = createModel({
     players: [] as Player[],
     currentPlayer: null as null | Player['id'],
+    tokenLine: 4,
     grid : [
         ['EMPTY', 'EMPTY', 'EMPTY', 'EMPTY', 'EMPTY', 'EMPTY', 'EMPTY'],
         ['EMPTY', 'EMPTY', 'EMPTY', 'EMPTY', 'EMPTY', 'EMPTY', 'EMPTY'],
@@ -21,16 +21,27 @@ export const GameModel = createModel({
         ['EMPTY', 'EMPTY', 'EMPTY', 'EMPTY', 'EMPTY', 'EMPTY', 'EMPTY'],
         ['EMPTY', 'EMPTY', 'EMPTY', 'EMPTY', 'EMPTY', 'EMPTY', 'EMPTY'],
     ] as GridState,
+}, {
+    events: {
+        join: (playerId: Player["id"], name: Player["name"] ) => ({ playerId, name }),
+        leave: (playerId: Player["id"]) => ({ playerId }),
+        chooseColor: (playerId: Player["id"], color: PlayerColors) => ({ playerId, color }),
+        start: (playerId: Player["id"]) => ({ playerId }),
+        dropToken: (playerId: Player["id"], column: number) => ({ playerId, column }),
+        playAgain: (playerId: Player["id"]) => ({ playerId }),
+    }
 })
 
-export const GameMachine = createMachine({
+export const GameMachine = GameModel.createMachine({
 
     id: 'game',
+    context: GameModel.initialContext,
     initial: GameStates.LOBBY,
     states: {
         [GameStates.LOBBY]: {
             on: {
                 join: {
+                    cond: canJoinGuard,
                     target: GameStates.LOBBY
                 },
                 leave : {
@@ -48,7 +59,7 @@ export const GameMachine = createMachine({
         [GameStates.GAME]: {
             on: {
                 dropToken: { 
-                    target: '???'
+                    target: GameStates.LOBBY
                 },
             }
         },
