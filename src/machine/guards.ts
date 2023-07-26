@@ -1,4 +1,3 @@
-import { createPortal } from 'react-dom';
 import { GameGuard, PlayerColors } from '../types';
 import { currentPlayer, freePositionY, winingTokenPosition } from '../func/game';
 
@@ -17,7 +16,7 @@ export const canChooseColorGuard: GameGuard<"chooseColor"> = (context, event) =>
 }
 
 /* ici on regarde si les deux joueurs on choisis leur couleur avant de lancer la game */ 
-export const canStartGameGuard: GameGuard<"start"> = (context, event) => {
+export const canStartGameGuard: GameGuard<"start"> = (context) => {
   return context.players.filter(p => p.color).length === 2
 }
 

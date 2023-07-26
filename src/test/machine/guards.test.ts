@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { InterpreterFrom, interpret } from "xstate";
 import { GameMachine, GameModel, makeGame } from "../../machine/GameMachine";
-import { GameContext, GameStates, PlayerColors } from "../../types";
+import { GameStates, PlayerColors } from "../../types";
 
 describe("machines/guards", () =>{
     
