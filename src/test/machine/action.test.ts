@@ -32,4 +32,27 @@ describe("machines/actions", () =>{
         })
     })
 
+    describe("leaveGameAction", () =>{
+        let machine:InterpreterFrom<typeof GameMachine>
+
+        beforeEach(() =>
+        {
+            machine = interpret(GameMachine).start()
+        })
+
+        it('Let a Player Leave', () => {
+            expect(machine.send(GameModel.events.join("1","1")).changed).toBe(true)
+            machine.send(GameModel.events.leave("1"))
+            expect(machine.getSnapshot().context.players).toHaveLength(0)
+        })
+
+        it('Let two Player Leave', () => {
+            expect(machine.send(GameModel.events.join("1","1")).changed).toBe(true)
+            expect(machine.send(GameModel.events.join("2","2")).changed).toBe(true)
+            machine.send(GameModel.events.leave("1"))
+            machine.send(GameModel.events.leave("2"))
+            expect(machine.getSnapshot().context.players).toHaveLength(0)
+        })
+    })
+
 })

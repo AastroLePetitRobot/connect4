@@ -20,6 +20,43 @@ describe("machines/guards", () =>{
             expect(machine.send(GameModel.events.join("1","1")).changed).toBe(true)
             expect(machine.send(GameModel.events.join("1","1")).changed).toBe(false)
         })
+
+        it('Do not Let 3 Player Join', () => {
+            expect(machine.send(GameModel.events.join("1","1")).changed).toBe(true)
+            expect(machine.send(GameModel.events.join("2","2")).changed).toBe(true)
+            expect(machine.send(GameModel.events.join("3","3")).changed).toBe(false)
+        })
+    })
+
+    describe("canLeaveGame", () =>{
+        let machine:InterpreterFrom<typeof GameMachine>
+
+        beforeEach(() =>
+        {
+            machine = interpret(GameMachine).start()
+        })
+
+        it ('Let a player leave',() => {
+            expect(machine.send(GameModel.events.join("1","1")).changed).toBe(true)
+            expect(machine.send(GameModel.events.leave("1")).changed).toBe(true)
+        })
+
+        it('Do not let an  player leave before enter',() => {
+            expect(machine.send(GameModel.events.leave("2")).changed).toBe(false)
+        })
+
+        it('Do not let an unknow player leave',() => {
+            expect(machine.send(GameModel.events.join("1","1")).changed).toBe(true)
+            expect(machine.send(GameModel.events.leave("2")).changed).toBe(false)
+        })
+
+        it('Do not let an player leave twice',() => {
+            expect(machine.send(GameModel.events.join("1","1")).changed).toBe(true)
+            expect(machine.send(GameModel.events.leave("1")).changed).toBe(true)
+            expect(machine.send(GameModel.events.leave("1")).changed).toBe(false)
+
+        })
+
     })
 
 })
