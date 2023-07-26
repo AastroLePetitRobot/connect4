@@ -1,8 +1,8 @@
 import { createModel } from "xstate/lib/model";
-import { GameContext, GameStates, Player, PlayerColors } from "../types";
+import { GameContext, GameStates, Player, PlayerColors, Position } from "../types";
 import { GridState } from "../types";
-import { canChooseColorGuard, canDropTokenGuard, canJoinGuard, canLeaveGuard, canStartGameGuard } from "./guards";
-import { joinGameAction, leaveGameAction } from "./actions";
+import { canChooseColorGuard, canDropTokenGuard, canJoinGuard, canLeaveGuard, canStartGameGuard, isWiningMoveGuard } from "./guards";
+import { dropTokenAction, joinGameAction, leaveGameAction, saveWinningPositionAction, switchPlayerAction } from "./actions";
 import { InterpreterFrom, interpret } from "xstate";
 
 
@@ -11,6 +11,7 @@ export const GameModel = createModel({
     players: [] as Player[],
     currentPlayer: null as null | Player['id'],
     tokenLine: 4,
+    winingPosition: [] as Position[],
     grid : [
         ['EMPTY', 'EMPTY', 'EMPTY', 'EMPTY', 'EMPTY', 'EMPTY', 'EMPTY'],
         ['EMPTY', 'EMPTY', 'EMPTY', 'EMPTY', 'EMPTY', 'EMPTY', 'EMPTY'],
@@ -61,10 +62,17 @@ export const GameMachine = GameModel.createMachine({
 
         [GameStates.GAME]: {
             on: {
-                dropToken: { 
+                dropToken: [
+                    {
+                        cond: isWiningMoveGuard,
+                        target: GameStates.WIN,
+                        actions: [GameModel.assign(saveWinningPositionAction)]
+                    },
+                    { 
                     cond: canDropTokenGuard,
-                    target: GameStates.LOBBY
-                },
+                    actions: [GameModel.assign(dropTokenAction), GameModel.assign(switchPlayerAction)],
+                    target: GameStates.GAME
+                }],
             }
         },
 
@@ -87,14 +95,13 @@ export const GameMachine = GameModel.createMachine({
 })
 
 export function makeGame (state: GameStates = GameStates.LOBBY, context: Partial<GameContext> = {}): InterpreterFrom<typeof GameMachine> {
-    return interpret(GameMachine.withContext({
+    const machine = interpret(GameMachine.withContext({
         ...GameModel.initialContext,
         ...context
-    }).withConfig({
-        ...GameMachine.config,
-        initial: state
-} as any)
-        ).start()
+    })).start()
+
+    machine.getSnapshot().value = state     
+    return machine  
 
 }
 

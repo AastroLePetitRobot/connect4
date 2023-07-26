@@ -66,29 +66,46 @@ describe("machines/guards", () =>{
 
 
     describe("canDropToken", () =>{
-        const machine = makeGame (GameStates.GAME, {
-            players:[{
-                id:'1',
-                name : 'Player1',
-                color: PlayerColors.RED   
-            }, {
-                id:'2',
-                name : 'Player2',
-                color: PlayerColors.YELLOW   
-            }],
-            currentPlayer: '1',
-            grid: [
-                ['EMPTY', 'EMPTY', 'EMPTY', 'EMPTY', 'EMPTY', 'EMPTY', PlayerColors.RED],
-                ['EMPTY', 'EMPTY', 'EMPTY', 'EMPTY', 'EMPTY', PlayerColors.RED, PlayerColors.YELLOW],
-                ['EMPTY', 'EMPTY', 'EMPTY', 'EMPTY', 'EMPTY', PlayerColors.RED, PlayerColors.RED],
-                ['EMPTY', 'EMPTY', 'EMPTY', 'EMPTY', 'EMPTY', PlayerColors.RED, PlayerColors.YELLOW],
-                ['EMPTY', 'EMPTY', 'EMPTY', 'EMPTY', 'EMPTY', PlayerColors.YELLOW, PlayerColors.RED],
-                ['EMPTY', 'EMPTY', 'EMPTY', 'EMPTY', 'EMPTY',PlayerColors.YELLOW, PlayerColors.YELLOW],
-            ]
+
+        let machine: InterpreterFrom<typeof GameMachine>
+
+        beforeEach(() => {
+            machine = makeGame (GameStates.GAME, {
+                players:[{
+                    id:'1',
+                    name : 'Player1',
+                    color: PlayerColors.RED   
+                }, {
+                    id:'2',
+                    name : 'Player2',
+                    color: PlayerColors.YELLOW   
+                }],
+                currentPlayer: '1',
+                grid: [
+                    ['EMPTY', 'EMPTY', 'EMPTY', 'EMPTY', 'EMPTY', 'EMPTY', PlayerColors.RED],
+                    ['EMPTY', 'EMPTY', 'EMPTY', 'EMPTY', 'EMPTY', PlayerColors.RED, PlayerColors.YELLOW],
+                    ['EMPTY', 'EMPTY', 'EMPTY', 'EMPTY', 'EMPTY', PlayerColors.RED, PlayerColors.RED],
+                    ['EMPTY', 'EMPTY', 'EMPTY', 'EMPTY', 'EMPTY', PlayerColors.RED, PlayerColors.YELLOW],
+                    ['EMPTY', 'EMPTY', 'EMPTY', 'EMPTY', 'EMPTY', PlayerColors.YELLOW, PlayerColors.RED],
+                    ['EMPTY', 'EMPTY', 'EMPTY', 'EMPTY', 'EMPTY',PlayerColors.YELLOW, PlayerColors.YELLOW],
+                ]
+            })
         })
       
         it('let me drop a token', () =>{
-            expect(machine.send(GameModel.events.dropToken("1",0)).changed).toBe(true)
+            expect(machine.send(GameModel.events.dropToken("1", 0 )).changed).toBe(true)
+            expect(machine.getSnapshot().value).toBe('GAME')
+        })
+
+        it('Do not let me drop a token', () =>{
+            expect(machine.send(GameModel.events.dropToken("1",6)).changed).toBe(false)
+            expect(machine.getSnapshot().value).toBe('GAME')
+        })
+        
+        it('let me win ', () =>{
+            expect(machine.send(GameModel.events.dropToken("1",5)).changed).toBe(true)
+            expect(machine.getSnapshot().value).toBe('WIN')
+            expect(machine.getSnapshot().context.winingPosition).toHaveLength(4)
         })
     })
 

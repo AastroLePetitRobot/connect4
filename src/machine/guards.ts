@@ -1,6 +1,6 @@
 import { createPortal } from 'react-dom';
 import { GameGuard, PlayerColors } from '../types';
-import { freePositionY } from '../func/game';
+import { currentPlayer, freePositionY, winingTokenPosition } from '../func/game';
 
 export const canJoinGuard: GameGuard<"join"> = (context, event) => {
     return context.players.length < 2 && (context.players.find(p => p.id === event.playerId) === undefined)
@@ -28,3 +28,7 @@ export const canDropTokenGuard: GameGuard<"dropToken"> = (context, event) => {
   freePositionY(context.grid, event.column) >= 0 
 }
 
+
+export const isWiningMoveGuard: GameGuard<"dropToken"> = (context, event) => {
+  return canDropTokenGuard(context,event) && winingTokenPosition(context.grid, currentPlayer(context).color!, event.column, context.tokenLine).length > 0
+}
