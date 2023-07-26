@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { InterpreterFrom, interpret } from "xstate";
-import { GameMachine, GameModel } from "../../machine/GameMachine";
+import { GameMachine, GameModel, makeGame } from "../../machine/GameMachine";
+import { GameContext, GameStates, PlayerColors } from "../../types";
 
 describe("machines/guards", () =>{
     
@@ -57,6 +58,38 @@ describe("machines/guards", () =>{
 
         })
 
+    })
+
+
+
+
+
+
+    describe("canDropToken", () =>{
+        const machine = makeGame (GameStates.GAME, {
+            players:[{
+                id:'1',
+                name : 'Player1',
+                color: PlayerColors.RED   
+            }, {
+                id:'2',
+                name : 'Player2',
+                color: PlayerColors.YELLOW   
+            }],
+            currentPlayer: '1',
+            grid: [
+                ['EMPTY', 'EMPTY', 'EMPTY', 'EMPTY', 'EMPTY', 'EMPTY', PlayerColors.RED],
+                ['EMPTY', 'EMPTY', 'EMPTY', 'EMPTY', 'EMPTY', PlayerColors.RED, PlayerColors.YELLOW],
+                ['EMPTY', 'EMPTY', 'EMPTY', 'EMPTY', 'EMPTY', PlayerColors.RED, PlayerColors.RED],
+                ['EMPTY', 'EMPTY', 'EMPTY', 'EMPTY', 'EMPTY', PlayerColors.RED, PlayerColors.YELLOW],
+                ['EMPTY', 'EMPTY', 'EMPTY', 'EMPTY', 'EMPTY', PlayerColors.YELLOW, PlayerColors.RED],
+                ['EMPTY', 'EMPTY', 'EMPTY', 'EMPTY', 'EMPTY',PlayerColors.YELLOW, PlayerColors.YELLOW],
+            ]
+        })
+      
+        it('let me drop a token', () =>{
+            expect(machine.send(GameModel.events.dropToken("1",0)).changed).toBe(true)
+        })
     })
 
 })

@@ -1,6 +1,12 @@
 import { ContextFrom, EventFrom } from "xstate";
 import { GameModel } from "./machine/GameMachine";
 
+export enum GameStates  {
+  LOBBY = 'LOBBY',
+  GAME = 'GAME', 
+  WIN = 'WIN', 
+  DRAW = 'DRAW',
+}
 export enum PlayerColors {
     RED = 'RED',
     YELLOW = 'YELLOW',
