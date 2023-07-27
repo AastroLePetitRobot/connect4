@@ -1,4 +1,3 @@
-import { currentPlayer } from "../../func/game"
 import { PlayerColors } from "../../types"
 import { ColorSelector } from "../component/ColorSelector"
 import { NameSelector } from "../component/Name"
