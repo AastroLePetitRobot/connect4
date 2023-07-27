@@ -21,7 +21,7 @@ function App() {
         {state === GameStates.GAME && <PlayScreen/>}
         {state === GameStates.WIN && <VictoryScreen/>}
         {state === GameStates.DRAW && <DrawScreen/>}
-        <Grid grid = {context.grid} onDrop={dropToken} color={player?.color}/>
+        <Grid winingPosition={context.winingPosition} grid = {context.grid} onDrop={dropToken} color={player?.color}/>
     </div>
   )
 }

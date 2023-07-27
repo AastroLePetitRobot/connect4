@@ -102,7 +102,7 @@ input:disabled {
   }
 
   .disc-active {
-    border: 8px solid #FFF;
+    border: 10px solid #FFF;
   }
 
   @keyframes Drop {
