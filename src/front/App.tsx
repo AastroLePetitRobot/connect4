@@ -17,8 +17,9 @@ function App() {
       <GameInfo color= {PlayerColors.RED} name="player1" />
       <Victory color= {PlayerColors.RED} name="player1" onRestart={()=>null}/>
       <Grid
+
       color = {PlayerColors.YELLOW}
-      onDrop ={console.log}
+      onDrop ={() => null}
       grid = {[
                     ['EMPTY', 'EMPTY', 'EMPTY', 'EMPTY', 'EMPTY', 'EMPTY', PlayerColors.RED],
                     ['EMPTY', 'EMPTY', 'EMPTY', 'EMPTY', 'EMPTY', PlayerColors.RED, PlayerColors.YELLOW],
