@@ -107,6 +107,22 @@ describe("machines/guards", () =>{
             expect(machine.getSnapshot().value).toBe('WIN')
             expect(machine.getSnapshot().context.winingPosition).toHaveLength(4)
         })
+
+        it('do a draw', () => {
+            machine = makeGame(GameStates.GAME, {
+                ...machine.getSnapshot().context,
+                grid: [
+                    [PlayerColors.YELLOW, PlayerColors.YELLOW, PlayerColors.YELLOW, PlayerColors.YELLOW, PlayerColors.YELLOW, 'EMPTY', PlayerColors.RED],
+                    [PlayerColors.YELLOW, PlayerColors.YELLOW, PlayerColors.YELLOW, PlayerColors.YELLOW, PlayerColors.YELLOW, PlayerColors.RED, PlayerColors.YELLOW],
+                    [PlayerColors.YELLOW, PlayerColors.YELLOW, PlayerColors.YELLOW, PlayerColors.YELLOW, PlayerColors.YELLOW, PlayerColors.RED, PlayerColors.RED],
+                    [PlayerColors.YELLOW,PlayerColors.YELLOW, PlayerColors.YELLOW, PlayerColors.YELLOW, PlayerColors.YELLOW, PlayerColors.RED, PlayerColors.YELLOW],
+                    [PlayerColors.YELLOW, PlayerColors.YELLOW,PlayerColors.YELLOW, PlayerColors.YELLOW, PlayerColors.YELLOW, PlayerColors.YELLOW, PlayerColors.RED],
+                    [PlayerColors.YELLOW, PlayerColors.YELLOW, PlayerColors.YELLOW, PlayerColors.YELLOW, PlayerColors.YELLOW,PlayerColors.YELLOW, PlayerColors.YELLOW],
+                ]
+            })
+            expect(machine.send(GameModel.events.dropToken("1",5)).changed).toBe(true)
+            expect(machine.getSnapshot().value).toBe('DRAW')
+        })
     })
 
 })

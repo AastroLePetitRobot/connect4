@@ -1,8 +1,8 @@
 import { createModel } from "xstate/lib/model";
 import { GameContext, GameStates, Player, PlayerColors, Position } from "../types";
 import { GridState } from "../types";
-import { canChooseColorGuard, canDropTokenGuard, canJoinGuard, canLeaveGuard, canStartGameGuard, isWiningMoveGuard } from "./guards";
-import { dropTokenAction, joinGameAction, leaveGameAction, saveWinningPositionAction, switchPlayerAction } from "./actions";
+import { canChooseColorGuard, canDropTokenGuard, canJoinGuard, canLeaveGuard, canStartGameGuard, isDrawMoveGuard, isWiningMoveGuard } from "./guards";
+import { chooseColorAction, dropTokenAction, joinGameAction, leaveGameAction, restartGameAction, saveWinningPositionAction, setFirstPlayerAction, switchPlayerAction } from "./actions";
 import { InterpreterFrom, interpret } from "xstate";
 
 
@@ -51,11 +51,13 @@ export const GameMachine = GameModel.createMachine({
                 },
                 chooseColor: {
                     cond: canChooseColorGuard,
-                    target: GameStates.LOBBY
+                    target: GameStates.LOBBY,
+                    actions: [GameModel.assign(chooseColorAction)]
                 },
                 start: {
                     cond: canStartGameGuard,
-                    target: GameStates.GAME
+                    target: GameStates.GAME,
+                    actions: [GameModel.assign(setFirstPlayerAction)]
                 }
             }
         },
@@ -63,6 +65,11 @@ export const GameMachine = GameModel.createMachine({
         [GameStates.GAME]: {
             on: {
                 dropToken: [
+                    {
+                        cond: isDrawMoveGuard,
+                        target: GameStates.DRAW,
+                        actions: [GameModel.assign(dropTokenAction)]
+                    },
                     {
                         cond: isWiningMoveGuard,
                         target: GameStates.WIN,
@@ -79,7 +86,8 @@ export const GameMachine = GameModel.createMachine({
         [GameStates.WIN]: {
             on: {
                 playAgain: {
-                    target: GameStates.LOBBY
+                    target: GameStates.LOBBY,
+                    actions: [GameModel.assign(restartGameAction)]
                 }
             }
         },
@@ -87,7 +95,8 @@ export const GameMachine = GameModel.createMachine({
         [GameStates.DRAW]: {
             on: {
                 playAgain: {
-                    target: GameStates.LOBBY
+                    target: GameStates.LOBBY,
+                    actions: [GameModel.assign(restartGameAction)]
                 }
             }
         },
