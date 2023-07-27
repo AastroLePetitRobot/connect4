@@ -18,8 +18,14 @@ html,body{
   align-items: center;
   gap: 0.5rem;
 }
-
 .disc {
+  width: 50px;
+  height: 50px;
+  border-radius: 100%;
+  z-index: -1;
+}
+
+.disc-YELLOW {
   background-color: yellow;
   box-shadow: inset 0 0 0 2px rgb(88, 88, 12);
   outline:  solid 1px rgb(88, 88, 12);
@@ -46,4 +52,29 @@ html,body{
 
 .selector .disc {
   margin: 10px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(var(--cols), 1fr);
+  grid-template-rows: repeat(var(--rows), 1fr);
+  aspect-ratio: var(--cols) / var(--rows);
+  background-color: blue;
+  background: radial-gradient(circle,transparent,transparent 50%,blue 51%, rgb(2, 2, 155) 60%, rgb(2, 2, 119) 70% , navy 100%);
+  background-size: calc(100%/ var(--cols)) calc(100%/ var(--rows));
+  border: 20px solid navy ;
+  place-content: center;
+  place-items: center;
+}
+
+.grid .disc {
+  width: 70%;
+  height: 70%;
+  animation: Drop 2s;
+}
+
+@keyframes Drop {
+    from {
+      transform: translateY(calc((-125%) * var(--rows)));
+    }
 }
