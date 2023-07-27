@@ -1,6 +1,6 @@
 import { PlayerColors } from "../../types"
 import { ColorSelector } from "../component/ColorSelector"
-import { NameSelector } from "../component/NameSelector"
+import { NameSelector } from "../component/Name"
 import { useGame } from "../hooks/useGame"
 
 type LobbyScreenProps = {}

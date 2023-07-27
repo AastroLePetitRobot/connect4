@@ -79,7 +79,7 @@ export const GameMachine = GameModel.createMachine({
                     {
                         cond: isWiningMoveGuard,
                         target: GameStates.WIN,
-                        actions: [GameModel.assign(saveWinningPositionAction)]
+                        actions: [GameModel.assign(dropTokenAction),GameModel.assign(saveWinningPositionAction)]
                     },
                     { 
                     cond: canDropTokenGuard,

@@ -95,14 +95,21 @@ input:disabled {
   width: 70%;
   height: auto;
   aspect-ratio: 1/1;
-  animation: Drop 2s;
 }
 
-@keyframes Drop {
+.grid .disc-YELLOW, .grid .disc-RED{
+    animation: Drop calc(.20s * var(--row)) infinite ;
+  }
+
+  .disc-active {
+    border: 8px solid #FFF;
+  }
+
+  @keyframes Drop {
     from {
-      transform: translateY(calc((-125%) * var(--rows)));
+      transform: translateY(calc(-125% * var(--row)));
     }
-}
+  }
 
 .columns {
   position: absolute;
