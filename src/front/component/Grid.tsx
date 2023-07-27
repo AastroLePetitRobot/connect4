@@ -7,7 +7,7 @@ import { prevent } from "../../func/dom"
 type GridProps = {
     color?: PlayerColors
     grid: GridState
-    onDrop: (x: number) => void
+    onDrop?: (x: number) => void
 }
 
 
