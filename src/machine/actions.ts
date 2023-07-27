@@ -40,7 +40,7 @@ export const setFirstPlayerAction = (context: GameContext) => ({
     currentPlayer: context.players.find(p => p.color === PlayerColors.YELLOW)!.id
 })
 
-export const restartGameAction: GameAction<"playAgain"> = (context) => ({
+export const restartGameAction: GameAction<"playAgain"> = () => ({
     winingPosition: [],
     grid : GameModel.initialContext.grid,
     currentPlayer: null
