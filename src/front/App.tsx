@@ -1,13 +1,16 @@
 import { PlayerColors } from "../types"
 import { ColorSelector } from "./screen/ColorSelector"
-import { Grid } from "./screen/Grid"
+import { Grid } from "./component/Grid"
 import { NameSelector } from "./screen/NameSelector"
 
 function App() {
   
   return (
     <div className='container'>
-      <Grid grid = {[
+      <Grid
+      color = {PlayerColors.YELLOW}
+      onDrop ={console.log}
+      grid = {[
                     ['EMPTY', 'EMPTY', 'EMPTY', 'EMPTY', 'EMPTY', 'EMPTY', PlayerColors.RED],
                     ['EMPTY', 'EMPTY', 'EMPTY', 'EMPTY', 'EMPTY', PlayerColors.RED, PlayerColors.YELLOW],
                     ['EMPTY', 'EMPTY', 'EMPTY', 'EMPTY', 'EMPTY', PlayerColors.RED, PlayerColors.RED],

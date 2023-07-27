@@ -2,6 +2,13 @@ html,body{
   font-family: sans-serif;
 }
 
+button {
+  border: none;
+  background: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+}
 .container{
   max-width: 600px;
   margin: 0 auto;
@@ -65,11 +72,14 @@ html,body{
   border: 20px solid navy ;
   place-content: center;
   place-items: center;
+  position: relative;
+  margin-top: calc(100% / var(--rows));
 }
 
 .grid .disc {
   width: 70%;
-  height: 70%;
+  height: auto;
+  aspect-ratio: 1/1;
   animation: Drop 2s;
 }
 
@@ -77,4 +87,30 @@ html,body{
     from {
       transform: translateY(calc((-125%) * var(--rows)));
     }
+}
+
+.columns {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+}
+
+.column {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  width: 100%;
+  height: calc(100% + 100% / var(--rows));
+}
+
+.column .disc{
+  opacity: 0;
+  transition: .7s;
+  translate: translateY(-20px) ;
+}
+
+.column:hover .disc{
+  opacity: 1;
+  transform: translateY(20px);
 }
