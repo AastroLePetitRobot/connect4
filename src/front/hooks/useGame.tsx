@@ -1,13 +1,14 @@
 import { PropsWithChildren, createContext, useContext } from "react"
-import { GameContext, GameEvents, GameStates } from "../../types"
+import { GameContext, GameEvent, GameEvents, GameStates, Player } from "../../types"
 import { useMachine } from "@xstate/react"
 import { GameMachine } from "../../machine/GameMachine"
 
 type GameContextType = {
     state: GameStates,
     context: GameContext,
-    send: (event: GameEvents) => void,
-    can: (event:GameEvents) => boolean
+    send: <T extends GameEvents["type"]>(event: {type: T, playerId?: string} & Omit<GameEvent<T>, 'playerId'>) => void,
+    can: <T extends GameEvents["type"]>(event: {type: T, playerId?: string} & Omit<GameEvent<T>, 'playerId'>) => boolean,
+    playerId: Player["id"],
 }
 
 const Context = createContext<GameContextType>({} as any)
@@ -19,11 +20,13 @@ export function useGame (): GameContextType {
 
 export function GameContextProvider ({children}: PropsWithChildren) {
     const [state,send] = useMachine(GameMachine)
+    const playerId = state.context.currentPlayer ?? ''
     return <Context.Provider value={{
+        playerId,
         state: state.value as GameStates,
         context: state.context,
-        send: send,
-        can: (event: GameEvents) => !!GameMachine.transition(state, event).changed
+        send: (event) => send({playerId, ...event} as GameEvents),
+        can: (event) => !!GameMachine.transition(state, {playerId, ...event} as GameEvents).changed
       }}>
         {children}
       </Context.Provider>

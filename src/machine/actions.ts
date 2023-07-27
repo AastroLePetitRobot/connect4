@@ -19,17 +19,17 @@ export const chooseColorAction: GameAction<"chooseColor"> = (context, event) => 
     })
 })
 
-export const dropTokenAction: GameAction<"dropToken"> = (context, event) => {
-    const PlayerColor = context.players.find(p => event.playerId === p.id)!.color!
-    const eventY = freePositionY(context.grid, event.column)
-    const newGrid = context.grid.map((row, y) => row.map((initialValue , x) => x === event.column && y === eventY ? PlayerColor: initialValue))
-    return {
-        grid: newGrid
-    }
+export const dropTokenAction: GameAction<"dropToken"> = ({grid, players}, {column: eventX, playerId}) => {
+  const playerColor = players.find(p => playerId === p.id)!.color!
+  const eventY = freePositionY(grid, eventX)
+  const newGrid = grid.map((row, y) => row.map((v, x) => x === eventX && y === eventY ? playerColor : v))
+  return {
+    grid: newGrid
+  }
 }
 
 export const switchPlayerAction = (context: GameContext) => ({
-  currentPlayer: context.players.find(p => p.id !== context.currentPlayer)!.id  
+  currentPlayer: context.players.find(p => p.id !== context.currentPlayer)!.id
 })
 
 export const saveWinningPositionAction: GameAction<"dropToken"> = (context,event) => ({
